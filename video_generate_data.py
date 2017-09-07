@@ -6,13 +6,13 @@ from collections import OrderedDict
 '''
 This scripts aggregates all the data from the various files and writes
 an unique TSV file with all required data into it, in order per line:
-1. the second in the video (starting at 0)
-2. the timestamp, rounded
-3. the percentage _of the flight_, not rounded, between 0 and 1
-4. the internal temperature, rounded, in °C
-5. the external temperature, rounded, in °C
-6. the altitude, rounded, in meters
-7. the pressure, rounded, in kPa
+0. the second in the video (starting at 0)
+1. the timestamp, rounded
+2. the percentage _of the flight_, not rounded, between 0 and 1
+3. the internal temperature, rounded, in °C
+4. the external temperature, rounded, in °C
+5. the altitude, rounded, in meters
+6. the pressure, rounded, in kPa
 
 If the data is not available, "-" is stored instead.
 '''
@@ -21,7 +21,7 @@ with open('data/fixed/temperature_internal.tsv') as temperature_in_file,\
 	 open('data/fixed/temperature_external.tsv') as temperature_out_file,\
 	 open('data/fixed/pressure_altitude.tsv') as pressure_file,\
 	 open('data/fixed/altitude_real_estimed_rp.tsv') as altitude_file,\
-	 open('data/fixed/video_aggregate.tsv', 'w', newline='') as aggregate_file:
+	 open('data/video/video_aggregate.tsv', 'w', newline='') as aggregate_file:
 	temperature_in = csv.reader(temperature_in_file, delimiter='\t')
 	temperature_out = csv.reader(temperature_out_file, delimiter='\t')
 	pressure = csv.reader(pressure_file, delimiter='\t')
@@ -46,7 +46,7 @@ with open('data/fixed/temperature_internal.tsv') as temperature_in_file,\
 		aggregate.writerow([
 			(moment - video_start).seconds,
 			int(moment.timestamp()),
-			0.0 if moment < launch else float((moment - launch).seconds) / float((touchdown - launch).seconds),
+			0.0 if moment < launch else '{:.8f}'.format(float((moment - launch).seconds) / float((touchdown - launch).seconds)),
 			int(float(temperature_in)) if temperature_in is not None else '-',
 			int(float(temperature_out)) if temperature_out is not None else '-',
 			int(float(altitude)) if altitude is not None else '-',

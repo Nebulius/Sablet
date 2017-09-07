@@ -36,7 +36,6 @@ one_minute = timedelta(seconds=60)
 while datetime.now() - startup < one_minute:
     for device_folder in base_dir.dirs('28*'):
         temp = read_temp(device_folder / 'w1_slave')
-        print(str(time.time()) + '\t' + str(temp))
         write_file = write_dir / device_folder.basename()
 
         write_file.write_lines([str(time.time()) + '\t' + str(temp)], append=True)
