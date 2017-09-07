@@ -41,4 +41,3 @@ while datetime.now() - startup < one_minute:
 
         write_file.write_lines([str(time.time()) + '\t' + str(temp)], append=True)
         time.sleep(1)
-
