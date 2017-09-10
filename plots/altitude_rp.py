@@ -1,4 +1,5 @@
 import csv
+import os
 import warnings
 
 from pytz import timezone
@@ -10,7 +11,11 @@ import matplotlib.pyplot as plt
 
 warnings.simplefilter('ignore', np.RankWarning)
 
-with open('data/fixed/altitude_real_estimed.tsv', 'r') as altitude_discrete_file, open('data/fixed/altitude_real_estimed_rp.tsv', 'w', newline='') as altitude_rp:
+root, _ = os.path.split(os.path.abspath(__file__))
+root += '/'
+
+with open(root + '../data/fixed/altitude_real_estimed.tsv', 'r') as altitude_discrete_file,\
+     open(root + '../data/fixed/altitude_real_estimed_rp.tsv', 'w', newline='') as altitude_rp:
 	altitude_discrete_csv = csv.reader(altitude_discrete_file, delimiter='\t')
 	altitude_rp_csv = csv.writer(altitude_rp, dialect='excel-tab', delimiter='\t')
 

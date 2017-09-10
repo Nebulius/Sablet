@@ -1,22 +1,34 @@
 import csv
-import click
 import math
+import os
+import sys
 
+import click
 import moviepy.editor as mpy
 import pysrt
 
 from PIL import ImageFont
+
+from utils import text_align_right, text_center
+
+
+root, _ = os.path.split(os.path.abspath(__file__))
+root += '/'
+
+
+'''
+Renders a video with data on it.
+
+If the 'no-messages' flag is passed, flashing messages are not written on the video.
+'''
 
 
 PROGRESS_BAR_HEIGHT = 10
 PROGRESS_BAR_WIDTH = 1363
 PROGRESS_BAR_POSITION = (41, 1000)
 
-MESSAGES_BOX = (41, 1404, 942)  # x1, x2, y
-MESSAGES_FONT = ImageFont.truetype('data/video/Jura_Light.ttf', 32)
-
-DATA_FONT = ImageFont.truetype('data/video/Jura_Light.ttf', 100)
-DATA_MISSING_FONT = ImageFont.truetype('data/video/Jura_Light.ttf', 60)
+DATA_FONT = ImageFont.truetype(root + '../data/video/Jura_Light.ttf', 100)
+DATA_MISSING_FONT = ImageFont.truetype(root + '../data/video/Jura_Light.ttf', 60)
 
 ALTITUDE_POSITION = (1595, 956)
 ALTITUDE_POSITION_MISSING = (1595, 972)
@@ -25,40 +37,15 @@ TEMPERATURE_POSITION = (1845, 956)
 TEMPERATURE_POSITION_MISSING = (1845, 972)
 
 
-clip = mpy.VideoFileClip("Enregistrements/Embarqué/CameraBallon-complet.mp4").subclip(0, 8*60)
-clip_gui = mpy.ImageClip('data/video/cadre_données_vide.png').set_duration(clip.duration)
+clip = mpy.VideoFileClip(root + '../../Enregistrements/Embarqué/CameraBallon-complet.mp4')
+clip_gui = mpy.ImageClip(root + '../data/video/cadre_données_vide.png').set_duration(clip.duration)
 
 composition = [clip, clip_gui]
 
 
-# ------  Text alignment utils
-
-def text_center(text, font, x1, x2, y):
-	'''
-	Centers a text in the given space, between x1 and x1
-	and at y, using the given font. Returns the position
-	of the top-left corner to be used with moviepy.
-
-	font must be a PIL.ImageFont instance.
-	'''
-	x_center = int((float(abs(x2 - x1)) / 2.0) + min(x1, x2))
-	text_box = font.getsize(text)
-	return (x_center - (float(text_box[0]) / 2.0), y)
-
-def text_align_right(text, font, x, y):
-	'''
-	Returns the position a text should have, for it to
-	ends at the given position.
-
-	font must be a PIL.ImageFont instance.
-	'''
-	text_box = font.getsize(text)
-	return (x - text_box[0], y)
-
-
 # ------  Data on the video
 
-with open('data/video/video_aggregate.tsv') as aggregate_file:
+with open(root + '../data/video/video_aggregate.tsv') as aggregate_file:
 	aggregate = csv.reader(aggregate_file, delimiter='\t')
 
 	print()
@@ -67,7 +54,7 @@ with open('data/video/video_aggregate.tsv') as aggregate_file:
 			second = int(data[0])
 
 			# End reached?
-			if second > clip.duration:
+			if second >= clip.duration:
 				break
 
 			# Altitude
@@ -118,30 +105,11 @@ with open('data/video/video_aggregate.tsv') as aggregate_file:
 
 # ------  Messages above the progress bar (read from a subtitles file)
 
-messages = pysrt.open('data/video/messages.srt')
+if 'no-messages' not in sys.argv:
+	from render_messages import add_messages_clips
 
-with click.progressbar(messages, label='Préparation des messages...') as bar:
-	for message in bar:
-		start = message.start.seconds
-		duration = message.duration.seconds
-		text = message.text_without_tags
-
-		if start > clip.duration:
-			continue
-
-		message_clip = (mpy.TextClip(
-					text,
-					fontsize=32,
-					font='JuraL',
-					color='white'
-				)
-				.set_pos(text_center(text, MESSAGES_FONT, *MESSAGES_BOX))
-				.set_duration(duration + 1.2 if start != 0 else duration + 0.6)
-				.set_start(max(0, start - 0.6))
-				.fx(mpy.vfx.fadein, .6)
-				.fx(mpy.vfx.fadeout, .6))
-
-		composition.append(message_clip)
+	messages = pysrt.open(root + '../data/video/messages.srt')
+	composition += add_messages_clips(messages, clip.duration)
 
 
 # ------  Final render
@@ -151,4 +119,4 @@ print('\nAssemblage de {} clips...\n'.format(len(composition)))
 video = mpy.CompositeVideoClip(composition)
 #video.save_frame('frame_na.png', t=0.3)
 
-video.write_videofile("Vidéos/Données brutes/Camera-Données-5m-medium.mp4", threads=6, preset='medium')
+video.write_videofile(root + '../../Vidéos/Données brutes/CameraDonnées-complet.mp4', threads=6, preset='medium')

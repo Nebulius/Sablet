@@ -1,7 +1,11 @@
 import csv
+import os
 
 from datetime import datetime, timedelta
 from collections import OrderedDict
+
+root, _ = os.path.split(os.path.abspath(__file__))
+root += '/'
 
 '''
 This scripts aggregates all the data from the various files and writes
@@ -17,11 +21,11 @@ an unique TSV file with all required data into it, in order per line:
 If the data is not available, "-" is stored instead.
 '''
 
-with open('data/fixed/temperature_internal.tsv') as temperature_in_file,\
-	 open('data/fixed/temperature_external.tsv') as temperature_out_file,\
-	 open('data/fixed/pressure_altitude.tsv') as pressure_file,\
-	 open('data/fixed/altitude_real_estimed_rp.tsv') as altitude_file,\
-	 open('data/video/video_aggregate.tsv', 'w', newline='') as aggregate_file:
+with open(root + '../data/fixed/temperature_internal.tsv') as temperature_in_file,\
+	 open(root + '../data/fixed/temperature_external.tsv') as temperature_out_file,\
+	 open(root + '../data/fixed/pressure_altitude.tsv') as pressure_file,\
+	 open(root + '../data/fixed/altitude_real_estimed_rp.tsv') as altitude_file,\
+	 open(root + '../data/video/video_aggregate.tsv', 'w', newline='') as aggregate_file:
 	temperature_in = csv.reader(temperature_in_file, delimiter='\t')
 	temperature_out = csv.reader(temperature_out_file, delimiter='\t')
 	pressure = csv.reader(pressure_file, delimiter='\t')

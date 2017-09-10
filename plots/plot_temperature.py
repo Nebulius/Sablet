@@ -1,4 +1,5 @@
 import csv
+import os
 import sys
 
 from datetime import datetime, timedelta
@@ -25,6 +26,9 @@ DATASETS = [
     'altitude', 'altitude-from-pressure', 'altitude-real', 'altitude-real-rp'
     'diff-temperature'
 ]
+
+root, _ = os.path.split(os.path.abspath(__file__))
+root += '/'
 
 
 ## Aide et vérification des arguments
@@ -55,9 +59,11 @@ if 'all' in args or not args:
 
 ## Chargement et interprétation des données
 
-with open('data/fixed/temperature_external.tsv', 'r') as temp_file_ext, open('data/fixed/temperature_internal.tsv', 'r') as temp_file_int,\
-     open('data/fixed/pressure_altitude.tsv', 'r') as pressure_file, open('data/fixed/altitude_real_estimed.tsv') as altitude_file,\
-     open('data/fixed/altitude_real_estimed_rp.tsv') as altitude_rp_file:
+with open(root + '../data/fixed/temperature_external.tsv', 'r') as temp_file_ext,\
+     open(root + '../data/fixed/temperature_internal.tsv', 'r') as temp_file_int,\
+     open(root + '../data/fixed/pressure_altitude.tsv', 'r') as pressure_file,\
+     open(root + '../data/fixed/altitude_real_estimed.tsv') as altitude_file,\
+     open(root + '../data/fixed/altitude_real_estimed_rp.tsv') as altitude_rp_file:
     temps_ext = csv.reader(temp_file_ext, delimiter='\t')
     temps_int = csv.reader(temp_file_int, delimiter='\t')
     pressure = csv.reader(pressure_file, delimiter='\t')
