@@ -1,9 +1,7 @@
 import csv
 import os
-import sys
 
 from datetime import datetime, timedelta
-from pytz import timezone
 
 root, _ = os.path.split(os.path.abspath(__file__))
 root += '/'
@@ -15,23 +13,27 @@ SECONDS_SHIFT = 19680 - 2 * 3600
 
 files = ['temperature_external.tsv', 'temperature_internal.tsv', 'pressure_altitude.tsv']
 
-for file in files:
-	with open(root + '../data/raw/' + file, 'r') as csv_file_raw,\
-	     open(root + '../data/fixed/' + file, 'w', newline='') as csv_file_fix:
-		data_reader = csv.reader(csv_file_raw, delimiter='\t')
-		data_writer = csv.writer(csv_file_fix, dialect='excel-tab', delimiter='\t')
 
-		for row in data_reader:
-			if len(row) < 2: continue
-			data_writer.writerow([float(row[0]) + SECONDS_SHIFT, *row[1:]])
+for file in files:
+    with open(root + '../data/raw/' + file, 'r') as csv_file_raw,\
+         open(root + '../data/fixed/' + file, 'w', newline='') as csv_file_fix:
+        data_reader = csv.reader(csv_file_raw, delimiter='\t')
+        data_writer = csv.writer(csv_file_fix, dialect='excel-tab', delimiter='\t')
+
+        for row in data_reader:
+            if len(row) < 2:
+                continue
+            data_writer.writerow([float(row[0]) + SECONDS_SHIFT, *row[1:]])
+
 
 with open(root + '../data/raw/altitude_real_estimed.tsv', 'r') as csv_file_raw,\
      open(root + '../data/fixed/altitude_real_estimed.tsv', 'w', newline='') as csv_file_fix:
-	data_reader = csv.reader(csv_file_raw, delimiter='\t')
-	data_writer = csv.writer(csv_file_fix, dialect='excel-tab', delimiter='\t')
+    data_reader = csv.reader(csv_file_raw, delimiter='\t')
+    data_writer = csv.writer(csv_file_fix, dialect='excel-tab', delimiter='\t')
 
-	launch = datetime(year=2017, month=8, day=17, hour=13, minute=12)
+    launch = datetime(year=2017, month=8, day=17, hour=13, minute=12)
 
-	for row in data_reader:
-		if len(row) < 2: continue
-		data_writer.writerow([(launch + timedelta(minutes=float(row[0]))).timestamp(), float(row[1]) * 1000])
+    for row in data_reader:
+        if len(row) < 2:
+            continue
+        data_writer.writerow([(launch + timedelta(minutes=float(row[0]))).timestamp(), float(row[1]) * 1000])
