@@ -9,7 +9,7 @@ root += '/'
 # Le raspberry n'était pas à l'heure, correctif nécessaire (valeur exacte
 # calculée à partir des relevés d'horaires effectués sur le moment, prenant en
 # compte l'heure d'été)
-SECONDS_SHIFT = 19680 - 2 * 3600
+SECONDS_SHIFT = 20030 - 2 * 3600
 
 files = ['temperature_external.tsv', 'temperature_internal.tsv', 'pressure_altitude.tsv']
 

@@ -121,7 +121,7 @@ def render_data_on_clip(base_clip, destination, starts_at=None, during=None, mes
 
     # ------  Final render
 
-    print('\nAssemblage de {} clips...\n'.format(len(composition)))
+    print(f'\nAssemblage de {len(composition)} clips...\n')
 
     video = mpy.CompositeVideoClip(composition)
     # video.save_frame('frame_na.png', t=0.3)
@@ -139,7 +139,7 @@ def is_int(s):
 
 if __name__ == '__main__':
     if 'help' in sys.argv:
-        print(sys.argv[0], '[part duration in seconds [first rendered part (starts at 0)]] [no-messages]')
+        print(sys.argv[0], '[part duration in seconds [first rendered part (starts at 1)]] [no-messages]')
         exit()
 
     clip = mpy.VideoFileClip(root + '../../Enregistrements/Embarqué/CameraBallon-complet.mp4')
@@ -150,11 +150,11 @@ if __name__ == '__main__':
     parts_length = int(sys.argv[1]) if len(sys.argv) > 1 and is_int(sys.argv[1]) else 5 * 60
     parts = math.ceil(float(clip.duration) / float(parts_length))
 
-    first_part = int(sys.argv[2]) if len(sys.argv) > 2 and is_int(sys.argv[2]) else 0
+    first_part = int(sys.argv[2]) - 1 if len(sys.argv) > 2 and is_int(sys.argv[2]) else 0
 
     for part in range(first_part, parts):
-        destination = '{}../../Vidéos/Données brutes/Camera-Donnees-{}.mp4'.format(root, part)
+        destination = f'{root}../../Vidéos/Données brutes/Camera-Donnees-{part + 1}-of-{parts}.mp4'
         start = part * parts_length
 
-        print('\n---------------------\n\nRendu de la vidéo {} de {}...'.format(part + 1, parts))
+        print(f'\n---------------------\n\nRendu de la vidéo {part + 1} de {parts}...')
         render_data_on_clip(clip, starts_at=start, during=parts_length, destination=destination)
