@@ -5,7 +5,7 @@ Ce dépôt conteint code et données utilisés pour le ballon SABLET. Vous trouv
 - les données brutes et traitées dans le dossier `data` ;
 - les programmes embarqués dans le ballon dans le dossier `sensors` ;
 - les programmes utilisés pour traiter les données et générer des graphiques dans le dossier `plots` ;
-- et enfin les programmes utilisés pour générer la vidéo avec les données dessus dans le dossier `video`.
+- et enfin les programmes utilisés pour générer [la vidéo du vol avec données incorporées en temps réel](https://youtu.be/CGmLy8h9WJg), dans le dossier `video`.
 
 ## Licence
 
